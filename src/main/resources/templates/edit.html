@@ -3,15 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <link th:href="@{/css/style.css}" rel="styleSheet">
-    <title>TOP</title>
+    <title>編集</title>
 </head>
 <body>
 <div class="header-contents">
-    <h1>投稿編集</h1>
+    <h1>編集</h1>
 </div>
 <div class="main-contents">
-    <form th:action="@{/edit/{id}(id=${content.id})}" th:method="put">
+    <form th:action="@{/update/{id}(id=${formModel.id})}" th:method="put" th:object="${formModel}">
         <label>投稿内容</label>
+        <!-- th:field="*{content}"で中身をとってくる -->
         <textarea class="tweet-box" th:field="*{content}" size="20" maxlength="200"/></textarea><br/>
         <input type="submit" value="更新"/>
     </form>

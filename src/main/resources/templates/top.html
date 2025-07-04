@@ -22,8 +22,9 @@
         </div>
 
         <div class="edit-button">
-            <a href="/edit">
-                <button class="edit-button" type="button">編集</button>
+            <!-- hrefでもThymeleafの構文が使える -->
+            <a th:href="@{/edit/{id}(id=${content.id})}">
+                <input type="button" value="編集">
             </a>
         </div>
 

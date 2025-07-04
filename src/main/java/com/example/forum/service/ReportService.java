@@ -40,7 +40,8 @@ public class ReportService {
     }
 
     /*
-     * レコード追加
+     * レコード追加・更新
+     * saveだから追加も更新も一括でできる
      */
     public void saveReport(ReportForm reqReport) {
         Report saveReport = setReportEntity(reqReport);
@@ -58,17 +59,17 @@ public class ReportService {
     }
 
     /*
-     * レコード取得
+     * レコード1件取得
+     * findById：引数がid(キー),戻り値がReportForm(Optional<Entity>)
      */
-    public void getReport(Integer id) {
-        reportRepository.findById(id);
-    }
-
-    /*
-     * レコード更新
-     */
-    public void updateReport(Integer id) {
-        reportRepository.getById(id);
+    public ReportForm editReport(Integer id) {
+        List<Report> results = new ArrayList<>();
+        // findById:該当のレコード取得,取得できなければnullを入れる
+        results.add((Report) reportRepository.findById(id).orElse(null));
+        // 
+        List<ReportForm> reports = setReportForm(results);
+        // idを返す
+        return reports.get(0);
     }
 
     /*
