@@ -17,6 +17,6 @@ public class Comment {
     @Column
     private String text;
 
-    @Column
+    @Column(name = "reportId", insertable = true, updatable = false)
     private int reportId;
 }

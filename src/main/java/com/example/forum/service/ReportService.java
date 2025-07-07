@@ -5,6 +5,7 @@ import com.example.forum.repository.ReportRepository;
 import com.example.forum.repository.entity.Report;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,6 +23,33 @@ public class ReportService {
         List<ReportForm> reports = setReportForm(results);
         return reports;
     }
+    /* (以下参考)
+
+    //start（end）が入力されたら時刻設定、そうでなければデフォルト値
+    // hasTextがisBlankと同じ働きをしている
+	if (hasText(start)) {
+        start += " 00:00:00";
+    } else {
+        start = "2020/01/01 00:00:00";
+    }
+	if (hasText(end)) {
+        end += " 23:59:59";
+    } else {
+        Date date = new Date();
+        //フォーマット指定
+        SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        end = sdFormat.format(date);
+    }
+    * 例）startDate末尾に00":00:00",endDate末尾に"23:59:59"を追加し、Dateに変換。
+　      SimpleDateFormat sdFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date startDate = sdFormat.parse(start);
+        Date endDate = sdFormat.parse(end);
+        // Repositoryで日付絞り込み
+       List<Report> results = reportRepository.findByCreatedDateBetween(startDate, endDate);
+       List<Report> results = reportRepository.findAllByOrderByIdDesc();
+       List<ReportForm> reports = setReportForm(results);
+       return reports;
+     */
 
     /*
      * DBから取得したデータをFormに設定

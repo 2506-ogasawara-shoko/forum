@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <link th:href="@{/css/style.css}" rel="styleSheet">
+    <title>コメント編集</title>
+</head>
+<body>
+<div class="header-contents">
+    <h1>コメント編集</h1>
+</div>
+<div class="main-contents">
+    <form th:action="@{/commentUpdate/{id}(id=${commentFormModel.id})}" th:method="put" th:object="${commentFormModel}">
+        <label>コメント内容</label>
+        <!-- th:field="*{content}"で中身をとってくる -->
+        <textarea class="comment-box" th:field="*{text}" size="20" maxlength="200"/></textarea><br/>
+        <input type="submit" value="更新"/>
+    </form>
+</div>
+
+<div class="footer-contents">
+    <form action="/">
+        <input type="submit" value="戻る"/>
+    </form>
+</div>
+
+</body>
+</html>

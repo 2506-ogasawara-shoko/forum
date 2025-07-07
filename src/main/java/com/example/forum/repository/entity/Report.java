@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Date;
+
 @Entity
 @Table(name = "report")
 @Getter
@@ -16,5 +18,10 @@ public class Report {
 
     @Column
     private String content;
+
+    // このカラムはinsert/updateのSQLに含まない
+    @Column(name = "created_date", insertable = false, updatable = false)
+    @Temporal(TemporalType.DATE)
+    private Date createdDate;
 }
 

@@ -24,6 +24,12 @@ body {
 	height: 56px;
 }
 
+.comment-box {
+    margin: 5px 0px;
+	width: 780px;
+	height: 56px;
+}
+
 button {
 	margin-bottom: 5px;
 }

@@ -1,16 +1,15 @@
 package com.example.forum.service;
 
 import com.example.forum.controller.form.CommentForm;
-import com.example.forum.controller.form.ReportForm;
 import com.example.forum.repository.CommentRepository;
 import com.example.forum.repository.entity.Comment;
-import com.example.forum.repository.entity.Report;
-import org.hibernate.annotations.Comments;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class CommentService {
     @Autowired
     CommentRepository commentRepository;
@@ -36,13 +35,14 @@ public class CommentService {
             Comment result = results.get(i);
             comment.setId(result.getId());
             comment.setText(result.getText());
+            comment.setReportId(result.getReportId());
             comments.add(comment);
         }
         return comments;
     }
 
     /*
-     * レコード追加
+     * レコード追加・更新
      */
     public void saveComment(CommentForm reqComment) {
         Comment saveComment = setCommentEntity(reqComment);
@@ -56,6 +56,27 @@ public class CommentService {
         Comment comment = new Comment();
         comment.setId(reqComment.getId());
         comment.setText(reqComment.getText());
+        comment.setReportId(reqComment.getReportId());
         return comment;
+    }
+
+    /*
+     * レコード1件取得
+     * findById：引数がid(キー),戻り値がReportForm(Optional<Entity>)
+     */
+    public CommentForm editComment(Integer id) {
+        List<Comment> results = new ArrayList<>();
+        // findById:該当のレコード取得,取得できなければnullを入れる
+        results.add((Comment) commentRepository.findById(id).orElse(null));
+        List<CommentForm> comments = setCommentForm(results);
+        // idを返す
+        return comments.get(0);
+    }
+
+    /*
+     * レコード削除
+     */
+    public void deleteComment(Integer id) {
+        commentRepository.deleteById(id);
     }
 }
