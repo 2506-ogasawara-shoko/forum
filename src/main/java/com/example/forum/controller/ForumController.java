@@ -9,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.sql.Timestamp;
 import java.util.List;
 
 @Controller
@@ -19,18 +20,15 @@ public class ForumController {
     @Autowired
     CommentService commentService;
 
-
-    /*
-     * 投稿・コメント内容表示処理
-     */
+    /* (Topページ)投稿・コメント内容表示処理 */
     @GetMapping
-    public ModelAndView top(@RequestParam(name="start") String start, @RequestParam(name="end") String end) {
+    // required=false:日付の入力が無くてもOK
+    public ModelAndView top(@RequestParam(name="start", required=false) String start, @RequestParam(name="end", required=false) String end) {
         ModelAndView mav = new ModelAndView();
         // 投稿・コメントを全件取得
-        // (投稿)日付指定の引数も加える？
-        List<ReportForm> contentData = reportService.findAllReport();
+        List<ReportForm> contentData = reportService.searchReport(start, end);
         List<CommentForm> textData = commentService.findAllComment();
-        // 画面遷移先を指定
+        // 画面遷移先
         mav.setViewName("/top");
         // 投稿・コメントデータオブジェクトを保管
         mav.addObject("contents", contentData);
@@ -40,10 +38,9 @@ public class ForumController {
         return mav;
     }
 
-    /*
-     * 新規投稿画面表示
-     * newページへの移動
-     */
+    /* ↓ 投稿(Report)の処理 */
+
+    /* 新規投稿画面(newページへの移動) */
     @GetMapping("/new")
     public ModelAndView newContent() {
         ModelAndView mav = new ModelAndView();
@@ -56,9 +53,7 @@ public class ForumController {
         return mav;
     }
 
-    /*
-     * 新規投稿処理
-     */
+    /* 新規投稿処理 */
     @PostMapping("/add")
     public ModelAndView addContent(@ModelAttribute("formModel") ReportForm reportForm) {
         // 投稿をテーブルに格納
@@ -67,23 +62,7 @@ public class ForumController {
         return new ModelAndView("redirect:/");
     }
 
-    /*
-     * 新規コメント処理
-     */
-    @PostMapping("/add/{reportId}")
-    // ModelAttribute:リクエストパラメータをオブジェクトにマッピングし、ビューに渡すためのアノテーション
-    public ModelAndView addComment(@PathVariable Integer reportId, @ModelAttribute("commentFormModel") CommentForm commentForm) {
-        // コメントに対応する投稿のIDを取得
-        commentForm.setReportId(reportId);
-        // コメントをテーブルに格納
-        commentService.saveComment(commentForm);
-        // rootへリダイレクト
-        return new ModelAndView("redirect:/");
-    }
-
-    /*
-     * 投稿編集画面表示
-     */
+    /* 投稿編集画面 */
     @GetMapping("/edit/{id}")
     public ModelAndView editContent(@PathVariable Integer id) {
         ModelAndView mav = new ModelAndView();
@@ -96,12 +75,8 @@ public class ForumController {
         return mav;
     }
 
-    /*
-     * 投稿編集処理
-     */
+    /* 投稿編集処理 */
     @PutMapping("/update/{id}")
-    // 今回はURLに同じidという名前があるため、引数にidが無くても回ってしまうが、
-    // @PathVariable Integer idの表記は必要
     public ModelAndView updateContent(@PathVariable Integer id, @ModelAttribute("formModel") ReportForm reportForm) {
         // UrlParameterのidを更新するentityにセット
         reportForm.setId(id);
@@ -111,38 +86,7 @@ public class ForumController {
         return new ModelAndView("redirect:/");
     }
 
-    /*
-     * コメント編集画面表示
-     */
-    @GetMapping("/commentEdit/{id}")
-    public ModelAndView editComment(@PathVariable Integer id) {
-        ModelAndView mav = new ModelAndView();
-        // キーに該当するレコードを取得
-        CommentForm comment = commentService.editComment(id);
-        // 準備した空のFormを保管
-        mav.addObject("commentFormModel", comment);
-        // 画面遷移先を指定
-        mav.setViewName("/commentEdit");
-        return mav;
-    }
-
-    /*
-     * コメント編集処理
-     */
-    @PutMapping("/commentUpdate/{id}")
-    public ModelAndView updateComment(@PathVariable Integer id, @ModelAttribute("commentFormModel") CommentForm commentForm) {
-        // UrlParameterのidを更新するentityにセット
-        commentForm.setId(id);
-        // コメントをテーブルに格納(新規作成時と同じメソッドへ)
-        commentService.saveComment(commentForm);
-        // rootへリダイレクト
-        return new ModelAndView("redirect:/");
-    }
-
-
-    /*
-     * 投稿削除処理
-     */
+    /* 投稿削除処理 */
     @DeleteMapping("/delete/{id}")
     public ModelAndView deleteContent(@PathVariable Integer id) {
         // 削除する投稿をテーブルに格納
@@ -151,14 +95,45 @@ public class ForumController {
         return new ModelAndView("redirect:/");
     }
 
-    /*
-     * コメント削除処理
-     */
+    /* ↓ コメント(Comment)の処理 */
+
+    /*　新規コメント処理 */
+    @PostMapping("/add/{reportId}")
+    // ModelAttribute:リクエストパラメータをオブジェクトにマッピングし、ビューに渡すためのアノテーション
+    public ModelAndView addComment(@PathVariable Integer reportId, @ModelAttribute("commentFormModel") CommentForm commentForm) {
+        // コメントに対応する投稿のIDを取得
+        commentForm.setReportId(reportId);
+        // コメントをテーブルに格納
+        commentService.saveComment(commentForm);
+        return new ModelAndView("redirect:/");
+    }
+
+    /* コメント編集画面 */
+    @GetMapping("/commentEdit/{id}")
+    public ModelAndView editComment(@PathVariable Integer id) {
+        ModelAndView mav = new ModelAndView();
+        CommentForm comment = commentService.editComment(id);
+        mav.addObject("commentFormModel", comment);
+        mav.setViewName("/commentEdit");
+        return mav;
+    }
+
+    /* コメント編集処理 */
+    @PutMapping("/commentUpdate/{id}")
+    public ModelAndView updateComment(@PathVariable Integer id, @ModelAttribute("commentFormModel") CommentForm commentForm) {
+        commentForm.setId(id);
+        // 更新日時取得
+        Timestamp updatedDate = new Timestamp(System.currentTimeMillis());
+        commentForm.setUpdatedDate(updatedDate);
+        commentService.saveComment(commentForm);
+        // commentForm
+        return new ModelAndView("redirect:/");
+    }
+
+    /* コメント削除処理 */
     @DeleteMapping("/commentDelete/{id}")
     public ModelAndView deleteComment(@PathVariable Integer id) {
-        // 削除するコメントをテーブルに格納
         commentService.deleteComment(id);
-        // rootへリダイレクト
         return new ModelAndView("redirect:/");
     }
 

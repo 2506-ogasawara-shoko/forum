@@ -14,19 +14,15 @@ public class CommentService {
     @Autowired
     CommentRepository commentRepository;
 
-    /*
-     * レコード全件取得処理
-     */
+    /* レコード全件取得処理 */
     public List<CommentForm> findAllComment() {
         // reportIdをキーに情報をとってくる
-        List<Comment> results = commentRepository.findAll();
+        List<Comment> results = commentRepository.findAllByOrderByUpdatedDateDesc();
         List<CommentForm> comments = setCommentForm(results);
         return comments;
     }
 
-    /*
-     * DBから取得したデータをFormに設定
-     */
+    /* DBから取得したデータをFormに設定 */
     private List<CommentForm> setCommentForm(List<Comment> results) {
         List<CommentForm> comments = new ArrayList<>();
 
@@ -36,27 +32,25 @@ public class CommentService {
             comment.setId(result.getId());
             comment.setText(result.getText());
             comment.setReportId(result.getReportId());
+            comment.setUpdatedDate(result.getUpdatedDate());
             comments.add(comment);
         }
         return comments;
     }
 
-    /*
-     * レコード追加・更新
-     */
+    /* レコード追加・更新 */
     public void saveComment(CommentForm reqComment) {
         Comment saveComment = setCommentEntity(reqComment);
+        // commentを更新したらそのIDでreportも更新
         commentRepository.save(saveComment);
     }
 
-    /*
-     * リクエストから取得した情報をEntityに設定
-     */
+    /* リクエストから取得した情報をEntityに設定 */
     private Comment setCommentEntity(CommentForm reqComment) {
         Comment comment = new Comment();
         comment.setId(reqComment.getId());
         comment.setText(reqComment.getText());
-        comment.setReportId(reqComment.getReportId());
+        comment.setUpdatedDate(reqComment.getUpdatedDate());
         return comment;
     }
 
@@ -73,9 +67,7 @@ public class CommentService {
         return comments.get(0);
     }
 
-    /*
-     * レコード削除
-     */
+    /* レコード削除 */
     public void deleteComment(Integer id) {
         commentRepository.deleteById(id);
     }

@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Date;
+import java.sql.Timestamp;
 
 @Getter
 @Setter
@@ -11,5 +12,6 @@ public class ReportForm {
 
     private int id;
     private String content;
-    private Date createdDate;
+    private Timestamp createdDate;
+    private Timestamp updatedDate;
 }

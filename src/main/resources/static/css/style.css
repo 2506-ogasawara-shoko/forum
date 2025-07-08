@@ -29,6 +29,11 @@ body {
 	width: 780px;
 	height: 56px;
 }
+.updated-date {
+    font-weight: lighter;
+    color: gray;
+    font: small-caption;
+}
 
 button {
 	margin-bottom: 5px;

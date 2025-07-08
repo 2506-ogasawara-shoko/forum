@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 @Entity
 @Table(name = "report")
@@ -21,7 +21,11 @@ public class Report {
 
     // このカラムはinsert/updateのSQLに含まない
     @Column(name = "created_date", insertable = false, updatable = false)
-    @Temporal(TemporalType.DATE)
-    private Date createdDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Timestamp createdDate;
+
+    @Column(name = "updated_date", insertable = false, updatable = true)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Timestamp updatedDate;
 }
 
