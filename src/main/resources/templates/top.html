@@ -15,8 +15,8 @@
     <div class="date-form">
         <form th:action="@{/}">
             日付：
-            <input name="start" type="date" /> ～
-            <input name="end" type="date" />
+            <input name="start" type="date"/> ～
+            <input name="end" type="date"/>
             <input type="submit" value="絞り込み">
         </form>
     </div>
@@ -47,10 +47,20 @@
             </form>
         </div>
 
+        <!-- エラーメッセージ -->
+        <div th:if="${reportId == content.id}">
+            <div class="error-massage">
+                <ul>
+                    <li><span th:text="${errorMessages}"/></li>
+                </ul>
+            </div>
+        </div>
+
         <!-- コメントフォーム -->
         <form th:action="@{/add/{id}(id=${content.id})}" th:object="${commentFormModel}" method="post">
             <div class="form-area">
                 <textarea class="comment-box" th:field="*{text}" size="20" maxlength="200"/></textarea><br/>
+                <input type="hidden" name="reportId" value="${content.id}"/>
                 <input type="submit" value="返信"/>
             </div>
         </form>

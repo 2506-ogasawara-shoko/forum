@@ -41,7 +41,6 @@ public class CommentService {
     /* レコード追加・更新 */
     public void saveComment(CommentForm reqComment) {
         Comment saveComment = setCommentEntity(reqComment);
-        // commentを更新したらそのIDでreportも更新
         commentRepository.save(saveComment);
     }
 
@@ -50,6 +49,7 @@ public class CommentService {
         Comment comment = new Comment();
         comment.setId(reqComment.getId());
         comment.setText(reqComment.getText());
+        comment.setReportId(reqComment.getReportId());
         comment.setUpdatedDate(reqComment.getUpdatedDate());
         return comment;
     }

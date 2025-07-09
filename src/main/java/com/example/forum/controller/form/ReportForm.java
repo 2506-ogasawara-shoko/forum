@@ -1,9 +1,9 @@
 package com.example.forum.controller.form;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.sql.Date;
 import java.sql.Timestamp;
 
 @Getter
@@ -11,7 +11,11 @@ import java.sql.Timestamp;
 public class ReportForm {
 
     private int id;
+
+    // バリデーション
+    @NotBlank
     private String content;
+
     private Timestamp createdDate;
     private Timestamp updatedDate;
 }

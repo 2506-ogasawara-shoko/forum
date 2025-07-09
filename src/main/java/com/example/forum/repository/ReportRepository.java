@@ -10,6 +10,6 @@ import java.util.List;
 
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Integer> {
-    // 日付による投稿絞り込み&コメントの更新日時降順(コメントのUpdatedDateとってくる)
+    // 日付による投稿絞り込み&更新日時降順
     public List<Report> findByCreatedDateBetweenOrderByUpdatedDateDesc(Date startDate, Date endDate);
 }

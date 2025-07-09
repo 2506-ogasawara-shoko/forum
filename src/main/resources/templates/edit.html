@@ -10,6 +10,13 @@
     <h1>編集</h1>
 </div>
 <div class="main-contents">
+    <!-- エラーメッセージ -->
+    <div class="error-massage" th:each="errorMessage : ${errorMessages}">
+        <ul>
+            <li><span th:text="${errorMessages}"/></li>
+        </ul>
+    </div>
+
     <form th:action="@{/update/{id}(id=${formModel.id})}" th:method="put" th:object="${formModel}">
         <label>投稿内容</label>
         <!-- th:field="*{content}"で中身をとってくる -->
