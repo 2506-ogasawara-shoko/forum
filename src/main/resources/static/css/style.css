@@ -18,6 +18,10 @@ body {
 	margin-left: 20px;
 }
 
+.error-massage {
+    color: red;
+}
+
 .tweet-box {
     margin: 5px 0px;
 	width: 780px;

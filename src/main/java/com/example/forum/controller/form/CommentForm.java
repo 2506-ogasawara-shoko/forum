@@ -13,7 +13,7 @@ public class CommentForm {
     private int id;
 
     // バリデーション
-    @NotBlank(message = "コメントを入力してください")
+    @NotBlank
     private String text;
 
     private int reportId;

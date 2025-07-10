@@ -34,14 +34,12 @@
         </div>
 
         <div class="edit-button">
-            <!-- hrefでもThymeleafの構文が使える -->
             <a th:href="@{/edit/{id}(id=${content.id})}">
                 <input type="button" value="編集">
             </a>
         </div>
 
         <div class="delete-button">
-            <!-- action:ここを対象にしてmethodの処理を進めていく -->
             <form th:action="@{/delete/{id}(id=${content.id})}" th:method="delete">
                 <input type="submit" value="削除"/>
             </form>
@@ -60,7 +58,6 @@
         <form th:action="@{/add/{id}(id=${content.id})}" th:object="${commentFormModel}" method="post">
             <div class="form-area">
                 <textarea class="comment-box" th:field="*{text}" size="20" maxlength="200"/></textarea><br/>
-                <input type="hidden" name="reportId" value="${content.id}"/>
                 <input type="submit" value="返信"/>
             </div>
         </form>

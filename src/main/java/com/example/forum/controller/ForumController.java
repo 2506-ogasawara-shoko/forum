@@ -55,11 +55,9 @@ public class ForumController {
         ModelAndView mav = new ModelAndView();
         // form用の空のentityを準備
         ReportForm reportForm = new ReportForm();
-        // 画面遷移先を指定
         mav.setViewName("/new");
         // 準備した空のFormを保管
         mav.addObject("formModel", reportForm);
-        // sessionが空でなければエラーメッセージ表示
         setErrorMessage(mav);
         return mav;
     }
@@ -86,9 +84,7 @@ public class ForumController {
         ReportForm report = reportService.editReport(id);
         // 準備した空のFormを保管
         mav.addObject("formModel", report);
-        // sessionが空でなければエラーメッセージ表示
         setErrorMessage(mav);
-        // 画面遷移先を指定
         mav.setViewName("/edit");
         return mav;
     }
@@ -117,7 +113,6 @@ public class ForumController {
     public ModelAndView deleteContent(@PathVariable Integer id) {
         // 削除する投稿をテーブルに格納
         reportService.deleteReport(id);
-        // rootへリダイレクト
         return new ModelAndView("redirect:/");
     }
 
@@ -127,14 +122,14 @@ public class ForumController {
     @PostMapping("/add/{reportId}")
     // バリデーション追加
     public ModelAndView addComment(@PathVariable Integer reportId, @Validated @ModelAttribute("commentFormModel") CommentForm commentForm, BindingResult result) {
-        // コメントに対応する投稿のIDを取得
-        commentForm.setReportId(reportId);
         // バリデーション
         if (result.hasErrors()) {
-            session.setAttribute("errorMessages", "投稿内容を入力してください");
+            session.setAttribute("errorMessages", "コメントを入力してください");
             session.setAttribute("reportId", reportId);
             return new ModelAndView("redirect:/");
         }
+        // コメントに対応する投稿のIDを取得
+        commentForm.setReportId(reportId);
         // 登録処理へ
         saveComment(commentForm);
         return new ModelAndView("redirect:/");
@@ -146,7 +141,6 @@ public class ForumController {
         ModelAndView mav = new ModelAndView();
         CommentForm comment = commentService.editComment(id);
         mav.addObject("commentFormModel", comment);
-        // sessionが空でなければエラーメッセージ表示
         setErrorMessage(mav);
         mav.setViewName("/commentEdit");
         return mav;
@@ -179,7 +173,7 @@ public class ForumController {
         return;
     }
 
-    /* reportの更新日時を更新 */
+    /* 投稿の更新日時を更新 */
     private void updateReportDate(CommentForm commentForm) {
         ReportForm reportForm = new ReportForm();
         // reportId入れる
@@ -187,7 +181,7 @@ public class ForumController {
         // Idからreportの情報取得
         ReportForm report = reportService.editReport(commentForm.getReportId());
         reportForm.setContent(report.getContent());
-        // seveCommentで取得した更新日時取得
+        // 取得した更新日時を格納
         reportForm.setUpdatedDate(commentForm.getUpdatedDate());
         reportService.saveReport(reportForm);
         return;
@@ -200,11 +194,12 @@ public class ForumController {
         return new ModelAndView("redirect:/");
     }
 
-    // エラーメッセージのメソッド
+    /* エラーメッセージ */
     private void setErrorMessage(ModelAndView mav) {
-        if(session.getAttribute("errorMessages") != null){
+        if (session.getAttribute("errorMessages") != null) {
             mav.addObject("errorMessages", session.getAttribute("errorMessages"));
-            if(session.getAttribute("reportId") != null) {
+            // コメント新規投稿時のみreportIdを追加
+            if (session.getAttribute("reportId") != null) {
                 mav.addObject("reportId", session.getAttribute("reportId"));
             }
             // sessionの破棄

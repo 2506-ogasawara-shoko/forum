@@ -54,10 +54,7 @@ public class CommentService {
         return comment;
     }
 
-    /*
-     * レコード1件取得
-     * findById：引数がid(キー),戻り値がReportForm(Optional<Entity>)
-     */
+    /*　レコード1件取得 */
     public CommentForm editComment(Integer id) {
         List<Comment> results = new ArrayList<>();
         // findById:該当のレコード取得,取得できなければnullを入れる
